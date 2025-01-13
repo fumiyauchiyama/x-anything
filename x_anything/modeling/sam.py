@@ -8,9 +8,10 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union, Optional
+from torchvision.transforms.transforms import Compose
 
-from .image_encoder import ImageEncoderViT
+from .image_encoder import ImageEncoderViT, ImageEncoderTimmViT
 from .mask_decoder import MaskDecoder
 from .prompt_encoder import PromptEncoder
 
@@ -21,23 +22,26 @@ class Sam(nn.Module):
 
     def __init__(
         self,
-        image_encoder: ImageEncoderViT,
+        image_encoder: Union[ImageEncoderViT, ImageEncoderTimmViT],
         prompt_encoder: PromptEncoder,
         mask_decoder: MaskDecoder,
         pixel_mean: List[float] = [123.675, 116.28, 103.53],
         pixel_std: List[float] = [58.395, 57.12, 57.375],
+        vit_preprocess: Optional[Compose] = None,
     ) -> None:
         """
         SAM predicts object masks from an image and input prompts.
 
         Arguments:
-          image_encoder (ImageEncoderViT): The backbone used to encode the
+          image_encoder (Union[ImageEncoderViT, ImageEncoderTimmViT]): The backbone used to encode the
             image into image embeddings that allow for efficient mask prediction.
           prompt_encoder (PromptEncoder): Encodes various types of input prompts.
           mask_decoder (MaskDecoder): Predicts masks from the image embeddings
             and encoded prompts.
           pixel_mean (list(float)): Mean values for normalizing pixels in the input image.
           pixel_std (list(float)): Std values for normalizing pixels in the input image.
+          vit_preprocess (Optional[Compose]): A torchvision transform to apply to the input image.
+            Mainly for custom transforms for timm models.
         """
         super().__init__()
         self.image_encoder = image_encoder
@@ -45,6 +49,7 @@ class Sam(nn.Module):
         self.mask_decoder = mask_decoder
         self.register_buffer("pixel_mean", torch.Tensor(pixel_mean).view(-1, 1, 1), False)
         self.register_buffer("pixel_std", torch.Tensor(pixel_std).view(-1, 1, 1), False)
+        self.vit_preprocess = vit_preprocess
 
     @property
     def device(self) -> Any:
@@ -115,15 +120,16 @@ class Sam(nn.Module):
                 dense_prompt_embeddings=dense_embeddings,
                 multimask_output=multimask_output,
             )
-            masks = self.postprocess_masks(
+            masks_unthresholded = self.postprocess_masks(
                 low_res_masks,
                 input_size=image_record["image"].shape[-2:],
                 original_size=image_record["original_size"],
             )
-            masks = masks > self.mask_threshold
+            masks = masks_unthresholded > self.mask_threshold
             outputs.append(
                 {
                     "masks": masks,
+                    "masks_unthresholded": masks_unthresholded,
                     "iou_predictions": iou_predictions,
                     "low_res_logits": low_res_masks,
                 }
@@ -163,6 +169,11 @@ class Sam(nn.Module):
 
     def preprocess(self, x: torch.Tensor) -> torch.Tensor:
         """Normalize pixel values and pad to a square input."""
+        if self.vit_preprocess is not None:
+            # conver tensor from uint8 to float32
+            x = x.to(torch.float32)
+            return self.vit_preprocess(x)
+
         # Normalize colors
         x = (x - self.pixel_mean) / self.pixel_std
 

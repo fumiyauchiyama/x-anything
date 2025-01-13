@@ -9,6 +9,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from typing import Optional, Tuple, Type
+from timm.models.vision_transformer import VisionTransformer
+from timm.layers.format import Format
 
 from .common import LayerNorm2d, MLPBlock
 
@@ -114,6 +116,78 @@ class ImageEncoderViT(nn.Module):
         x = self.neck(x.permute(0, 3, 1, 2))
 
         return x
+    
+
+class ImageEncoderTimmViT(nn.Module):
+    def __init__(
+        self,
+        vit: VisionTransformer,
+        img_size: int = 1024,
+        out_chans: int = 256,
+    ) -> None:
+        """
+        Args:
+            img_size (int): Input image size. This is not ViT image size but for SAM.
+                            Assume that the input image is resized to this size at Sam.preprocess() 
+                            before passing to ImageEncoderTimmViT).
+            out_chans (int): Final output channel size.
+        """
+        super().__init__()
+        self.img_size = img_size
+
+        self.vit = vit
+        self.vit_embed_dim = vit.patch_embed.proj.out_channels
+        self.patch_size = vit.patch_embed.patch_size[0]
+        if self.patch_size != 16:
+            raise NotImplementedError("Only patch size 16 is supported.")
+        self.vit_image_size = vit.patch_embed.img_size[0]
+        self.out_chans = out_chans
+
+        self.neck = nn.Sequential(
+            nn.Conv2d(
+                self.vit_embed_dim,
+                out_chans,
+                kernel_size=1,
+                bias=False,
+            ),
+            LayerNorm2d(out_chans),
+            nn.Conv2d(
+                out_chans,
+                out_chans,
+                kernel_size=1,
+                padding=25,
+                bias=False,
+            ),
+            LayerNorm2d(out_chans),
+        )
+
+    def forward(
+            self, 
+            x: torch.Tensor # BCHW
+            ) -> torch.Tensor: # BCHW
+        
+        B, C, H, W = x.shape
+        assert H == W == self.vit_image_size
+
+        # extract image embeddings from ViT
+        image_embeddings = self.vit.forward_features(x) # BLC
+        assert (
+            len(image_embeddings.shape) == 3 and image_embeddings.shape[-1] == self.vit_embed_dim
+        )
+        vit_image_grid_size = self.vit_image_size // self.patch_size
+        image_embeddings = image_embeddings[:, :(vit_image_grid_size ** 2), :]
+
+        # fix the output format into BCHW
+        image_embeddings = image_embeddings.permute(0, 2, 1).reshape(
+            B, self.vit_embed_dim, vit_image_grid_size, vit_image_grid_size
+            )
+
+        # apply neck
+        image_embeddings = self.neck(image_embeddings)
+        image_embedding_size = self.img_size // self.patch_size
+        assert image_embeddings.shape == (B, self.out_chans, image_embedding_size, image_embedding_size)
+
+        return image_embeddings
 
 
 class Block(nn.Module):

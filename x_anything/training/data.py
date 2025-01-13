@@ -15,10 +15,12 @@ import os
 from PIL import Image
 
 from pycocotools import mask as mask_utils
+from x_anything.utils.transforms import ResizeLongestSide
+
 
 @dataclass
 class SegmentationDataPoint:
-    image: torch.Tensor # HWC format, torch.uint8
+    image: torch.Tensor # CHW format, torch.uint8
     masks: torch.Tensor # NHW tensor
     areas: torch.Tensor # N tensor
     bboxes: torch.Tensor # N*4 tensor, XYXY format
@@ -36,6 +38,7 @@ class SA1BDatasetArgs:
     #     sort -n | \
     #     tail -n 1
     max_mask_num: int = 64
+    img_size: int = 1024
 
 
 class SA1B_Dataset(Dataset):
@@ -44,6 +47,7 @@ class SA1B_Dataset(Dataset):
         self.json_dir = args.json_dir
         self.num_data = args.num_data
         self.max_mask_num = args.max_mask_num
+        self.transform = ResizeLongestSide(args.img_size)
 
     def __len__(self) -> int:
         return self.num_data
@@ -51,7 +55,9 @@ class SA1B_Dataset(Dataset):
     def __getitem__(self, idx) -> SegmentationDataPoint:
         img = Image.open(os.path.join(self.jpg_dir, f"sa_{idx+1}.jpg"))
         # convert img to tensor with HWC uint8 format
-        img_tensor =  torch.from_numpy(np.array(img).astype(np.uint8))
+        img_numpy = np.array(img).astype(np.uint8)
+        img_tensor =  torch.from_numpy(self.transform.apply_image(img_numpy))
+        img_tensor = img_tensor.permute(2, 0, 1).contiguous()
         with open(os.path.join(self.json_dir, f"sa_{idx+1}.json")) as f:
             json_data = json.load(f)
         anns = json_data['annotations']
@@ -81,7 +87,7 @@ class SA1B_Dataset(Dataset):
 
 class SegmentationBatch:
     def __init__(self, batch: List[SegmentationDataPoint]) -> None:
-        self.images = [x.image for x in batch]
+        self.images = torch.stack([x.image for x in batch])
         self.masks = [x.masks for x in batch]
         self.areas = torch.stack([x.areas for x in batch])
         self.bboxes = torch.stack([x.bboxes for x in batch])
@@ -94,6 +100,15 @@ class SegmentationBatch:
         self.bboxes = self.bboxes.pin_memory()
         self.num_ann_samples = self.num_ann_samples.pin_memory()
         return self
+    
+
+@dataclass
+class SegmentationBatchOutput:
+    # B: num of iterations, N: max_mask_num, M: predicted masks, H: height, W: width
+    outs_batch: torch.Tensor # BNMHW tensor 
+    targets_batch: torch.Tensor # BNHW tensor
+    ious_batch: torch.Tensor # BNM tensor
+    num_ann_samples: torch.Tensor # valid number of annotations in B tensor
     
 
 def collate_wrapper(batch: List[SegmentationDataPoint]) -> SegmentationBatch:

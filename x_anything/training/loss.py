@@ -14,6 +14,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from x_anything.training.distributed import get_world_size
+from x_anything.training.data import SegmentationBatchOutput
 
 
 def dice_loss(inputs, targets, num_objects, loss_on_multimask=False):
@@ -175,31 +176,39 @@ class MultiStepMultiMasksAndIous(nn.Module):
         self.iou_use_l1_loss = iou_use_l1_loss
         self.pred_obj_scores = pred_obj_scores
 
-    def forward(self, outs_batch: List[Dict], targets_batch: torch.Tensor):
-        assert len(outs_batch) == len(targets_batch)
-        num_objects = torch.tensor(
-            (targets_batch.shape[1]), device=targets_batch.device, dtype=torch.float
-        )  # Number of objects is fixed within a batch
-        if torch.distributed.is_initialized():
-            torch.distributed.all_reduce(num_objects)
-        num_objects = torch.clamp(num_objects / get_world_size(), min=1).item()
+    def forward(self, batch_output: SegmentationBatchOutput):
+        """
+        Iterate over the batch and compute the losses for each sample.
+        Each sample contains the predicted masks and IoUs for each object.
+        """
+        assert len(batch_output.outs_batch) == len(batch_output.targets_batch)
+        # num_objects = torch.tensor(
+        #     (targets_batch.shape[1]), device=batch_output.targets_batch.device, dtype=torch.float
+        # )  # Number of objects is fixed within a batch
+        # if torch.distributed.is_initialized():
+        #     torch.distributed.all_reduce(num_objects)
+        # num_objects = torch.clamp(num_objects / get_world_size(), min=1).item()
 
         losses = defaultdict(int)
-        for outs, targets in zip(outs_batch, targets_batch):
-            cur_losses = self._forward(outs, targets, num_objects)
+        for outs, targets, ious, num_objects in zip(
+            batch_output.outs_batch, batch_output.targets_batch, batch_output.ious_batch, batch_output.num_ann_samples
+            ):
+            cur_losses = self._forward(outs[:num_objects], targets[:num_objects], ious[:num_objects], num_objects)
             for k, v in cur_losses.items():
                 losses[k] += v
 
         return losses
 
-    def _forward(self, outputs: Dict, targets: torch.Tensor, num_objects):
+    def _forward(self, outputs: torch.Tensor, targets: torch.Tensor, ious: torch.Tensor, num_objects):
         """
         Compute the losses related to the masks: the focal loss and the dice loss.
         and also the MAE or MSE loss between predicted IoUs and actual IoUs.
 
-        Here "multistep_pred_multimasks_high_res" is a list of multimasks (tensors
-        of shape [N, M, H, W], where M could be 1 or larger, corresponding to
-        one or multiple predicted masks from a click.
+        Args:
+            outputs: A float tensor of NMHW shape.
+            targets: A float tensor of NHW shape.
+            ious: A float tensor of NM shape.
+            num_objects: Number of objects in the batch
 
         We back-propagate focal, dice losses only on the prediction channel
         with the lowest focal+dice loss between predicted mask and ground-truth.
@@ -208,21 +217,16 @@ class MultiStepMultiMasksAndIous(nn.Module):
 
         target_masks = targets.unsqueeze(1).float()
         assert target_masks.dim() == 4  # [N, 1, H, W]
-        src_masks_list = outputs["multistep_pred_multimasks_high_res"]
-        ious_list = outputs["multistep_pred_ious"]
-        object_score_logits_list = outputs["multistep_object_score_logits"]
 
-        assert len(src_masks_list) == len(ious_list)
-        assert len(object_score_logits_list) == len(ious_list)
+        object_score_logits = None # For SAM, object scores are not used
+
+        assert len(outputs) == len(ious)
 
         # accumulate the loss over prediction steps
         losses = {"loss_mask": 0, "loss_dice": 0, "loss_iou": 0, "loss_class": 0}
-        for src_masks, ious, object_score_logits in zip(
-            src_masks_list, ious_list, object_score_logits_list
-        ):
-            self._update_losses(
-                losses, src_masks, target_masks, ious, num_objects, object_score_logits
-            )
+        self._update_losses(
+            losses, outputs, target_masks, ious, num_objects, object_score_logits
+        )
         losses["core_loss"] = self.reduce_loss(losses)
         return losses
 
