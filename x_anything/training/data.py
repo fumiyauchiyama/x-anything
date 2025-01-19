@@ -1,6 +1,7 @@
 # https://github.com/simoneangarano/segment-anything/blob/main/segment_anything/utils/data.py
 from dataclasses import dataclass
 import random
+import logging
 from typing import List, Tuple, Optional
 
 import numpy as np
@@ -16,6 +17,10 @@ from PIL import Image
 
 from pycocotools import mask as mask_utils
 from x_anything.utils.transforms import ResizeLongestSide
+
+logger = logging.getLogger()
+
+MAX_RETRIES = 100
 
 
 @dataclass
@@ -55,38 +60,45 @@ class SA1B_Dataset(Dataset):
         return self.num_data
     
     def __getitem__(self, idx) -> SegmentationDataPoint:
-        img = Image.open(os.path.join(self.jpg_dir, f"sa_{idx+1}.jpg"))
-        # convert img to tensor with HWC uint8 format
-        img_numpy = np.array(img).astype(np.uint8)
-        img_tensor =  torch.from_numpy(img_numpy)
-        img_tensor = img_tensor.permute(2, 0, 1).contiguous()
-        with open(os.path.join(self.json_dir, f"sa_{idx+1}.json")) as f:
-            json_data = json.load(f)
-        anns = json_data['annotations']
-        num_anns = len(anns)
-        # sample up to self.max_mask_num annotation indexes
-        ann_idx = random.sample(range(num_anns), num_anns)
-        bboxes = []
-        masks = []
-        for idx in ann_idx:
-            ann = anns[idx]
+        for retry in range(MAX_RETRIES):
+            try:
+                img = Image.open(os.path.join(self.jpg_dir, f"sa_{idx+1}.jpg"))
+                # convert img to tensor with HWC uint8 format
+                img_numpy = np.array(img).astype(np.uint8)
+                img_tensor =  torch.from_numpy(img_numpy)
+                img_tensor = img_tensor.permute(2, 0, 1).contiguous()
+                with open(os.path.join(self.json_dir, f"sa_{idx+1}.json")) as f:
+                    json_data = json.load(f)
+                anns = json_data['annotations']
+                num_anns = len(anns)
+                # sample up to self.max_mask_num annotation indexes
+                ann_idx = random.sample(range(num_anns), num_anns)
+                bboxes = []
+                masks = []
+                for idx in ann_idx:
+                    ann = anns[idx]
 
-            area = ann['area']
-            if area <= self.max_mask_area_ratio * img_tensor.shape[1] * img_tensor.shape[2]:
-                # convert XYWH to XYXY
-                bbox = [ann['bbox'][0], ann['bbox'][1], ann['bbox'][0]+ann['bbox'][2], ann['bbox'][1]+ann['bbox'][3]]
-                bboxes.append(torch.tensor(bbox))
-                mask = mask_utils.decode(ann['segmentation'])
-                masks.append(torch.from_numpy(mask))
+                    area = ann['area']
+                    if area <= self.max_mask_area_ratio * img_tensor.shape[1] * img_tensor.shape[2]:
+                        # convert XYWH to XYXY
+                        bbox = [ann['bbox'][0], ann['bbox'][1], ann['bbox'][0]+ann['bbox'][2], ann['bbox'][1]+ann['bbox'][3]]
+                        bboxes.append(torch.tensor(bbox))
+                        mask = mask_utils.decode(ann['segmentation'])
+                        masks.append(torch.from_numpy(mask))
 
-            if len(masks) >= self.max_mask_num:
-                break
+                    if len(masks) >= self.max_mask_num:
+                        break
 
-        return SegmentationDataPoint(
-            image=img_tensor,
-            masks=torch.stack(masks),
-            bboxes=torch.stack(bboxes),
-        )
+                return SegmentationDataPoint(
+                    image=img_tensor,
+                    masks=torch.stack(masks),
+                    bboxes=torch.stack(bboxes),
+                )
+            except Exception as e:
+                logging.warning(
+                    f"Loading failed (id={idx}); Retry {retry} with exception: {e}"
+                )
+                idx = random.randrange(0, len(self.num_data))
 
 
 class SegmentationBatch:
