@@ -17,6 +17,7 @@ logger = logging.getLogger()
 @dataclass
 class TrainerArgs:
     num_epochs: int = 2
+    save_steps: int = 1000
     model: SamWithTimmViTArgs = field(default_factory=SamWithTimmViTArgs)
     optim: OptimizationArgs = field(default_factory=OptimizationArgs)
     train_dataset: SA1BDatasetArgs = field(default_factory=SA1BDatasetArgs)
@@ -29,6 +30,7 @@ class SamTrainer:
             rank: int,
             ) -> None:
         self.num_epochs = args.num_epochs
+        self.save_steps = args.save_steps
         model = build_sam_with_timm(args=args.model).to(rank)
         self.model = DDP(model, device_ids=[rank])
         self.loss_fn = MultiStepMultiMasksAndIous(weight_dict={
@@ -76,7 +78,11 @@ class SamTrainer:
         
         pred_masks = pred_masks > self.model.module.mask_threshold
         target_masks = target_masks > 0
-        xor_masks = pred_masks ^ target_masks
+        try:
+            xor_masks = pred_masks ^ target_masks
+        except:
+            print(pred_masks.shape, target_masks.shape)
+            raise
         points = self._sample_point_from_segmentation(xor_masks)
 
         # Check if the sampled points are foreground or background
@@ -158,6 +164,8 @@ class SamTrainer:
                 previous_masks_high_res = self.model.module.postprocess_masks(
                     previous_masks.unsqueeze(1), input_size, original_size
                     ).squeeze(1)
+                logger.info(f"Previous masks shape: {previous_masks.shape}")
+                logger.info(f"Previous masks high res shape: {previous_masks_high_res.shape}")
                 point_coords, point_labels = self._sample_point_from_err_region(
                     previous_masks_high_res, target_masks
                     ) # B×1×2, B×1
@@ -172,7 +180,6 @@ class SamTrainer:
             point_coords = self.transform.apply_coords_torch(point_coords, original_size)
             point_coords = point_coords.to(self.rank)
             point_labels = point_labels.to(self.rank)
-            points = (point_coords, point_labels)
         if perturbated_bboxes is not None:
             perturbated_bboxes = self.transform.apply_boxes_torch(perturbated_bboxes, original_size)
             perturbated_bboxes = perturbated_bboxes.to(self.rank)
@@ -199,6 +206,9 @@ class SamTrainer:
             point_coords = previous_coords
             point_labels = previous_labels
             perturbated_bboxes = previous_boxes
+
+        if point_coords is not None:
+            points = (point_coords, point_labels)
 
         return points, perturbated_bboxes, previous_masks
 
@@ -243,7 +253,7 @@ class SamTrainer:
         # iterate steps for 11 times
         for step in range(11):
             # prepare prompt
-            if step == iter_no_new_sample:
+            if step == iter_no_new_sample or step == 10:
                 point_inputs, bbox_inputs, mask_inputs = self.prepare_prompt(
                     step, 
                     no_new_sample=True, 
@@ -286,6 +296,14 @@ class SamTrainer:
                 multimask_output=multimask_output,
             ) # (BMHW, BM) including single mask and multiple masks
 
+            logger.info(f"step: {step}")
+            if point_inputs is not None:
+                logger.info(f"point_inputs shape: {point_inputs[0].shape}, {point_inputs[1].shape}")
+            if bbox_inputs is not None:
+                logger.info(f"bbox_inputs shape: {bbox_inputs.shape}")
+            if mask_inputs is not None:
+                logger.info(f"mask_inputs shape: {mask_inputs.shape}")
+            
             # Upscale the masks to the original image resolution
             masks = self.model.module.postprocess_masks(low_res_masks, input_size, original_size)
 
@@ -314,6 +332,7 @@ class SamTrainer:
     def train_one_epoch(
             self,
             epoch,
+            step,
             ) -> None:
         self.train_sampler.set_epoch(epoch)
         logger.info(f"Epoch {epoch} started")
@@ -331,7 +350,13 @@ class SamTrainer:
                 self.optimizer.step()    
                 self.scheduler.step()
 
+                if step % self.save_steps == 0:
+                    torch.save(self.model.module.state_dict(), f"outputs/ckpts/model_{step}.pth")
+
+                step += 1
+
     def train(self) -> None:
         self.model.module.train()
+        step = 0
         for epoch in range(self.num_epochs):
-            self.train_one_epoch(epoch)
+            self.train_one_epoch(epoch, step)

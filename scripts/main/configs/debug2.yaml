@@ -1,9 +1,8 @@
 model:
   model_name: vit_tiny_patch16_224
-  vit_checkpoint: /home/fumiyauchiyama/model/checkpoint/pretrain_deit_tiny_3d-ofdb1k_lr1.0e-3_epochs80000_bs256-last.pth
 train_dataset:
   jpg_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_jpg_1_20
   json_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_json_1_20
   num_data: 223749
-  max_mask_num: 2
+  max_mask_num: 3
 save_steps: 200

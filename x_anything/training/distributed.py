@@ -86,6 +86,5 @@ def setup_torch_distributed() -> None:
     # set GPU device
     assert 0 <= local_rank
 
-    if torch.cuda.device_count() > 1:
-        torch.cuda.set_device(local_rank)
+    torch.cuda.set_device(local_rank)
     torch.distributed.init_process_group(init_method="env://", backend="nccl")

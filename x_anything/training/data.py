@@ -70,13 +70,13 @@ class SA1B_Dataset(Dataset):
         masks = []
         for idx in ann_idx:
             ann = anns[idx]
-            # convert XYWH to XYXY
-            bbox = [ann['bbox'][0], ann['bbox'][1], ann['bbox'][0]+ann['bbox'][2], ann['bbox'][1]+ann['bbox'][3]]
-            bboxes.append(torch.tensor(bbox))
-            mask = mask_utils.decode(ann['segmentation'])
 
             area = ann['area']
             if area <= self.max_mask_area_ratio * img_tensor.shape[1] * img_tensor.shape[2]:
+                # convert XYWH to XYXY
+                bbox = [ann['bbox'][0], ann['bbox'][1], ann['bbox'][0]+ann['bbox'][2], ann['bbox'][1]+ann['bbox'][3]]
+                bboxes.append(torch.tensor(bbox))
+                mask = mask_utils.decode(ann['segmentation'])
                 masks.append(torch.from_numpy(mask))
 
             if len(masks) >= self.max_mask_num:
