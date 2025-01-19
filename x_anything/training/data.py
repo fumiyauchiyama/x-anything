@@ -1,7 +1,7 @@
 # https://github.com/simoneangarano/segment-anything/blob/main/segment_anything/utils/data.py
 from dataclasses import dataclass
 import random
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import numpy as np
 import torch
@@ -20,17 +20,17 @@ from x_anything.utils.transforms import ResizeLongestSide
 
 @dataclass
 class SegmentationDataPoint:
+    # H: height, W: width (differed by image)
+    # C: channel
+    # N: number of masks
     image: torch.Tensor # CHW format, torch.uint8
     masks: torch.Tensor # NHW tensor
-    areas: torch.Tensor # N tensor
     bboxes: torch.Tensor # N*4 tensor, XYXY format
-    num_ann_samples: torch.Tensor # valid number of annotations in N tensor
-
 
 @dataclass
 class SA1BDatasetArgs:
-    jpg_dir: str
-    json_dir: str
+    jpg_dir: Optional[str] = None
+    json_dir: Optional[str] = None
     num_data: int = 223749 # for tar 1-20
     # You can get the number of data by running the following command:
     # ls "$YOUR_SA1B_JSON_DIR" | \
@@ -39,15 +39,17 @@ class SA1BDatasetArgs:
     #     tail -n 1
     max_mask_num: int = 64
     img_size: int = 1024
+    max_mask_area_ratio: float = 0.9
 
 
 class SA1B_Dataset(Dataset):
     def __init__(self, args: SA1BDatasetArgs) -> None:
+        assert args.jpg_dir is not None and args.json_dir is not None
         self.jpg_dir = args.jpg_dir
         self.json_dir = args.json_dir
         self.num_data = args.num_data
         self.max_mask_num = args.max_mask_num
-        self.transform = ResizeLongestSide(args.img_size)
+        self.max_mask_area_ratio = args.max_mask_area_ratio
 
     def __len__(self) -> int:
         return self.num_data
@@ -56,77 +58,64 @@ class SA1B_Dataset(Dataset):
         img = Image.open(os.path.join(self.jpg_dir, f"sa_{idx+1}.jpg"))
         # convert img to tensor with HWC uint8 format
         img_numpy = np.array(img).astype(np.uint8)
-        img_tensor =  torch.from_numpy(self.transform.apply_image(img_numpy))
+        img_tensor =  torch.from_numpy(img_numpy)
         img_tensor = img_tensor.permute(2, 0, 1).contiguous()
         with open(os.path.join(self.json_dir, f"sa_{idx+1}.json")) as f:
             json_data = json.load(f)
         anns = json_data['annotations']
         num_anns = len(anns)
         # sample up to self.max_mask_num annotation indexes
-        ann_idx = random.sample(range(num_anns), min(self.max_mask_num, num_anns))
-        bboxes = torch.zeros((self.max_mask_num, 4)) # XYXY format
-        masks = torch.zeros((self.max_mask_num, img_tensor.shape[0], img_tensor.shape[1]))
-        areas = torch.zeros(self.max_mask_num)
-        for i, idx in enumerate(ann_idx):
+        ann_idx = random.sample(range(num_anns), num_anns)
+        bboxes = []
+        masks = []
+        for idx in ann_idx:
             ann = anns[idx]
             # convert XYWH to XYXY
             bbox = [ann['bbox'][0], ann['bbox'][1], ann['bbox'][0]+ann['bbox'][2], ann['bbox'][1]+ann['bbox'][3]]
-            bboxes[i] = torch.tensor(bbox)
+            bboxes.append(torch.tensor(bbox))
             mask = mask_utils.decode(ann['segmentation'])
-            masks[i] = torch.from_numpy(mask)
-            areas[i] = ann['area']
-        
+
+            area = ann['area']
+            if area <= self.max_mask_area_ratio * img_tensor.shape[1] * img_tensor.shape[2]:
+                masks.append(torch.from_numpy(mask))
+
+            if len(masks) >= self.max_mask_num:
+                break
+
         return SegmentationDataPoint(
             image=img_tensor,
-            masks=masks,
-            areas=areas,
-            bboxes=bboxes,
-            num_ann_samples=torch.tensor([len(ann_idx)]),
+            masks=torch.stack(masks),
+            bboxes=torch.stack(bboxes),
         )
 
 
 class SegmentationBatch:
     def __init__(self, batch: List[SegmentationDataPoint]) -> None:
-        self.images = torch.stack([x.image for x in batch])
+        self.images = [x.image for x in batch]
         self.masks = [x.masks for x in batch]
-        self.areas = torch.stack([x.areas for x in batch])
-        self.bboxes = torch.stack([x.bboxes for x in batch])
-        self.num_ann_samples = torch.stack([x.num_ann_samples for x in batch])
+        self.bboxes = [x.bboxes for x in batch]
 
     def pin_memory(self):
         self.images = [x.pin_memory() for x in self.images]
         self.masks = [x.pin_memory() for x in self.masks]
-        self.areas = self.areas.pin_memory()
-        self.bboxes = self.bboxes.pin_memory()
-        self.num_ann_samples = self.num_ann_samples.pin_memory()
+        self.bboxes = [x.pin_memory() for x in self.bboxes]
         return self
     
-
-@dataclass
-class SegmentationBatchOutput:
-    # B: num of iterations, N: max_mask_num, M: predicted masks, H: height, W: width
-    outs_batch: torch.Tensor # BNMHW tensor 
-    targets_batch: torch.Tensor # BNHW tensor
-    ious_batch: torch.Tensor # BNM tensor
-    num_ann_samples: torch.Tensor # valid number of annotations in B tensor
-    
-
 def collate_wrapper(batch: List[SegmentationDataPoint]) -> SegmentationBatch:
     return SegmentationBatch(batch)
 
-
 def get_dataloader(
         args: SA1BDatasetArgs, 
-        batch_size: int, 
         rank,
         world_size,
+        batch_size: int = 1, # set batch size to 1 for image singe there are up to 64 masks 
         shuffle=True,
         pin_memory=True,
         num_workers=4,
         drop_last=True
     ) -> Tuple[DataLoader, DistributedSampler]:
     dataset = SA1B_Dataset(args)
-    sampler = DistributedSampler(
+    sampler: DistributedSampler = DistributedSampler(
         dataset, 
         num_replicas=world_size, 
         rank=rank, 

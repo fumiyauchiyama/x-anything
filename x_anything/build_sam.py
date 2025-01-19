@@ -113,7 +113,7 @@ def _build_sam(
 
 @dataclass
 class ImageEncoderPreprocessArgs:
-    img_size: Union[int, Tuple[int, int]] = 224
+    img_size: int = 224
     interpolation: str = 'bicubic'
     is_training: bool = False
     no_aug: bool = True
@@ -121,7 +121,7 @@ class ImageEncoderPreprocessArgs:
 
 @dataclass
 class SamWithTimmViTArgs:
-    model_name: str
+    model_name: str = 'vit_base_patch16_224'
     pretrained: bool = False
     drop_rate: float = 0.0
     drop_path_rate: float = 0.1
@@ -145,8 +145,7 @@ def build_sam_with_timm(
     # Load checkpoint from OFDB
     # https://github.com/ryoo-nakamura/OFDB/blob/ea761ecb082756a374413704983f9e1f4acc5997/main.py#L157
     if args.vit_checkpoint is not None:
-        ckpt = torch.load(args.vit_checkpoint, map_location='cpu')
-        print(ckpt.keys())
+        ckpt = torch.load(args.vit_checkpoint, weights_only=True)
         if args.vit_checkpoint.endswith('.pth'):
             # ckpt_model = ckpt
             ckpt_model = ckpt['model']

@@ -42,27 +42,27 @@ def get_is_mpi_run() -> bool:
 
 def get_global_rank() -> int:
     if get_is_torch_run():
-        return int(os.environ.get('RANK'))
+        return int(os.environ['RANK'])
     elif get_is_mpi_run():
-        return int(os.environ.get('OMPI_COMM_WORLD_RANK'))
+        return int(os.environ['OMPI_COMM_WORLD_RANK'])
     else:
         return 0
     
 
 def get_local_rank() -> int:
     if get_is_torch_run():
-        return int(os.environ.get('LOCAL_RANK'))
+        return int(os.environ['LOCAL_RANK'])
     elif get_is_mpi_run():
-        return int(os.environ.get('OMPI_COMM_WORLD_LOCAL_RANK'))
+        return int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK'])
     else:
         return 0
     
 
 def get_world_size() -> int:
     if get_is_torch_run():
-        return int(os.environ.get('WORLD_SIZE'))
+        return int(os.environ['WORLD_SIZE'])
     elif get_is_mpi_run():
-        return int(os.environ.get('OMPI_COMM_WORLD_SIZE'))
+        return int(os.environ['OMPI_COMM_WORLD_SIZE'])
     else:
         return 1
     

@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import LambdaLR
 
 @dataclass
-class OptimizationConfig:
+class OptimizationArgs:
     lr: float = 8e-4
     betas: tuple = (0.9, 0.999)
     weight_decay: float = 0.1
@@ -14,7 +14,7 @@ class OptimizationConfig:
     decay_iter_2: int = 86666
 
 
-def get_optimizer(model, config: OptimizationConfig):
+def get_optimizer(model, config: OptimizationArgs):
     optimizer = optim.AdamW(
         model.parameters(),
         lr=config.lr,
@@ -22,7 +22,7 @@ def get_optimizer(model, config: OptimizationConfig):
         weight_decay=config.weight_decay
     )
 
-    assert config,warmup_iters > 0
+    assert config.warmup_iters > 0
     assert config.warmup_iters < config.decay_iter_1 < config.decay_iter_2 < config.total_iters
 
     def lr_lambda(iter):
