@@ -164,8 +164,6 @@ class SamTrainer:
                 previous_masks_high_res = self.model.module.postprocess_masks(
                     previous_masks.unsqueeze(1), input_size, original_size
                     ).squeeze(1)
-                logger.info(f"Previous masks shape: {previous_masks.shape}")
-                logger.info(f"Previous masks high res shape: {previous_masks_high_res.shape}")
                 point_coords, point_labels = self._sample_point_from_err_region(
                     previous_masks_high_res, target_masks
                     ) # B×1×2, B×1
@@ -295,14 +293,6 @@ class SamTrainer:
                 dense_prompt_embeddings=dense_embeddings,
                 multimask_output=multimask_output,
             ) # (BMHW, BM) including single mask and multiple masks
-
-            logger.info(f"step: {step}")
-            if point_inputs is not None:
-                logger.info(f"point_inputs shape: {point_inputs[0].shape}, {point_inputs[1].shape}")
-            if bbox_inputs is not None:
-                logger.info(f"bbox_inputs shape: {bbox_inputs.shape}")
-            if mask_inputs is not None:
-                logger.info(f"mask_inputs shape: {mask_inputs.shape}")
             
             # Upscale the masks to the original image resolution
             masks = self.model.module.postprocess_masks(low_res_masks, input_size, original_size)
