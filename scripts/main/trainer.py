@@ -1,9 +1,11 @@
 from typing import List, Dict, Any, Optional, Tuple
 import torch
+import torch.distributed as dist
 import random
 import logging
 from dataclasses import dataclass, field, asdict
 import time
+import os
 
 import wandb
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -12,7 +14,7 @@ from x_anything.utils.transforms import ResizeLongestSide
 from x_anything.training.loss import MultiStepMultiMasksAndIous, CORE_LOSS_KEY
 from x_anything.training.optim import OptimizationArgs, get_optimizer
 from x_anything.training.data import SA1BDatasetArgs, SA1B_Dataset, get_dataloader
-from x_anything.training.distributed import dist_mean_dict
+from x_anything.training.distributed import dist_mean_dict, dist_max
 from x_anything.build_sam import SamWithTimmViTArgs, build_sam_with_timm
 
 logger = logging.getLogger()
@@ -32,6 +34,10 @@ class SamTrainer:
             world_size: int,
             rank: int,
             ) -> None:
+        # determine experiment id from time
+        experiment_id = int(time.time())
+        self.experiment_id = f"exp_{dist_max(experiment_id)}"
+
         self.cfg = args
         self.num_epochs = args.num_epochs
         self.save_steps = args.save_steps
@@ -348,8 +354,11 @@ class SamTrainer:
                 if self.rank == 0:
                     wandb.log(loss)
 
-                if step % self.save_steps == 0:
-                    torch.save(self.model.module.state_dict(), f"outputs/ckpts/model_{step}.pth")
+                if step % self.save_steps == 0 and self.rank == 0:
+                    save_dir = f"outputs/{self.experiment_id}"
+                    os.makedirs(save_dir, exist_ok=True)
+                    torch.save(self.model.module.state_dict(), f"{save_dir}/model_{step}.pth")
+                dist.barrier()
 
                 step += 1
 
@@ -357,13 +366,11 @@ class SamTrainer:
         self.model.module.train()
 
         if self.rank == 0:
-            # determine experiment id from time
-            experiment_id = int(time.time())
 
             wandb.init(
                 project="x-anything",
                 config=asdict(self.cfg),
-                name=f"experiment_{experiment_id}",
+                name=self.experiment_id,
                 )
 
         step = 0

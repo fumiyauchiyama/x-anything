@@ -6,4 +6,3 @@ train_dataset:
   json_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_json_1_20
   num_data: 223749
   max_mask_num: 2
-save_steps: 200

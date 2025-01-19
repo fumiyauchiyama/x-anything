@@ -4,5 +4,4 @@ train_dataset:
   jpg_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_jpg_1_20
   json_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_json_1_20
   num_data: 223749
-  max_mask_num: 3
-save_steps: 200
+  max_mask_num: 2
