@@ -1,0 +1,135 @@
+2: INFO    25-01-19 22:41:25.249015 - 0:00:04 - Epoch 0 started
+[34m[1mwandb[0m: 500 encountered ({"errors":[{"message":"An internal error occurred. Please contact support.","path":["upsertBucket"]}],"data":{"upsertBucket":null}}), retrying request
+2: INFO    25-01-19 22:41:27.030969 - 0:00:06 - Epoch 0, iter 0, loss: 39.59492492675781
+2: INFO    25-01-19 22:41:27.852178 - 0:00:07 - Epoch 0, iter 1, loss: 39.46133041381836
+2: INFO    25-01-19 22:41:28.409315 - 0:00:07 - Epoch 0, iter 2, loss: 38.944305419921875
+2: INFO    25-01-19 22:41:28.948930 - 0:00:08 - Epoch 0, iter 3, loss: 39.74953079223633
+2: INFO    25-01-19 22:41:29.471223 - 0:00:09 - Epoch 0, iter 4, loss: 37.553409576416016
+2: INFO    25-01-19 22:41:30.064357 - 0:00:09 - Epoch 0, iter 5, loss: 37.069000244140625
+2: INFO    25-01-19 22:41:30.596174 - 0:00:10 - Epoch 0, iter 6, loss: 36.27749252319336
+2: INFO    25-01-19 22:41:31.147185 - 0:00:10 - Epoch 0, iter 7, loss: 36.18586730957031
+2: INFO    25-01-19 22:41:31.694945 - 0:00:11 - Epoch 0, iter 8, loss: 35.4111328125
+2: INFO    25-01-19 22:41:32.250984 - 0:00:11 - Epoch 0, iter 9, loss: 33.89373016357422
+2: INFO    25-01-19 22:41:32.785028 - 0:00:12 - Epoch 0, iter 10, loss: 32.03305435180664
+2: INFO    25-01-19 22:41:33.339989 - 0:00:12 - Epoch 0, iter 11, loss: 33.24108123779297
+2: INFO    25-01-19 22:41:33.885433 - 0:00:13 - Epoch 0, iter 12, loss: 31.669248580932617
+2: INFO    25-01-19 22:41:34.431699 - 0:00:13 - Epoch 0, iter 13, loss: 28.954526901245117
+2: INFO    25-01-19 22:41:34.976640 - 0:00:14 - Epoch 0, iter 14, loss: 28.436342239379883
+2: INFO    25-01-19 22:41:35.533565 - 0:00:15 - Epoch 0, iter 15, loss: 26.448307037353516
+2: INFO    25-01-19 22:41:36.078050 - 0:00:15 - Epoch 0, iter 16, loss: 24.585105895996094
+2: INFO    25-01-19 22:41:36.622281 - 0:00:16 - Epoch 0, iter 17, loss: 22.927635192871094
+2: INFO    25-01-19 22:41:37.180953 - 0:00:16 - Epoch 0, iter 18, loss: 21.825979232788086
+2: INFO    25-01-19 22:41:37.716088 - 0:00:17 - Epoch 0, iter 19, loss: 19.997692108154297
+2: INFO    25-01-19 22:41:38.250845 - 0:00:17 - Epoch 0, iter 20, loss: 18.7724552154541
+2: INFO    25-01-19 22:41:38.927615 - 0:00:18 - Epoch 0, iter 21, loss: 18.87440299987793
+2: INFO    25-01-19 22:41:39.447682 - 0:00:19 - Epoch 0, iter 22, loss: 16.426105499267578
+2: INFO    25-01-19 22:41:39.992661 - 0:00:19 - Epoch 0, iter 23, loss: 15.454085350036621
+2: INFO    25-01-19 22:41:40.555490 - 0:00:20 - Epoch 0, iter 24, loss: 14.653854370117188
+2: INFO    25-01-19 22:41:41.092116 - 0:00:20 - Epoch 0, iter 25, loss: 14.139967918395996
+2: INFO    25-01-19 22:41:41.635578 - 0:00:21 - Epoch 0, iter 26, loss: 13.427654266357422
+2: INFO    25-01-19 22:41:42.172766 - 0:00:21 - Epoch 0, iter 27, loss: 12.885429382324219
+2: INFO    25-01-19 22:41:42.709101 - 0:00:22 - Epoch 0, iter 28, loss: 12.715292930603027
+2: INFO    25-01-19 22:41:43.255146 - 0:00:22 - Epoch 0, iter 29, loss: 12.308267593383789
+2: INFO    25-01-19 22:41:43.803808 - 0:00:23 - Epoch 0, iter 30, loss: 12.195091247558594
+2: INFO    25-01-19 22:41:44.354267 - 0:00:23 - Epoch 0, iter 31, loss: 11.902202606201172
+2: INFO    25-01-19 22:41:44.895591 - 0:00:24 - Epoch 0, iter 32, loss: 11.70401382446289
+2: INFO    25-01-19 22:41:45.439337 - 0:00:24 - Epoch 0, iter 33, loss: 11.575142860412598
+2: INFO    25-01-19 22:41:45.972858 - 0:00:25 - Epoch 0, iter 34, loss: 11.463434219360352
+2: INFO    25-01-19 22:41:46.513788 - 0:00:26 - Epoch 0, iter 35, loss: 11.698324203491211
+2: INFO    25-01-19 22:41:47.046600 - 0:00:26 - Epoch 0, iter 36, loss: 11.840728759765625
+2: INFO    25-01-19 22:41:47.582865 - 0:00:27 - Epoch 0, iter 37, loss: 11.571869850158691
+2: INFO    25-01-19 22:41:48.135603 - 0:00:27 - Epoch 0, iter 38, loss: 11.204995155334473
+2: INFO    25-01-19 22:41:48.674820 - 0:00:28 - Epoch 0, iter 39, loss: 11.24338150024414
+2: INFO    25-01-19 22:41:49.216747 - 0:00:28 - Epoch 0, iter 40, loss: 11.634302139282227
+2: INFO    25-01-19 22:41:49.764884 - 0:00:29 - Epoch 0, iter 41, loss: 11.922798156738281
+2: INFO    25-01-19 22:41:50.306256 - 0:00:29 - Epoch 0, iter 42, loss: 11.19247055053711
+2: INFO    25-01-19 22:41:50.855146 - 0:00:30 - Epoch 0, iter 43, loss: 11.439667701721191
+2: INFO    25-01-19 22:41:51.395259 - 0:00:30 - Epoch 0, iter 44, loss: 11.055915832519531
+2: INFO    25-01-19 22:41:51.942251 - 0:00:31 - Epoch 0, iter 45, loss: 14.961833953857422
+2: INFO    25-01-19 22:41:52.450350 - 0:00:32 - Epoch 0, iter 46, loss: 11.196725845336914
+2: INFO    25-01-19 22:41:53.002556 - 0:00:32 - Epoch 0, iter 47, loss: 11.64550495147705
+2: INFO    25-01-19 22:41:53.546297 - 0:00:33 - Epoch 0, iter 48, loss: 14.0958833694458
+2: INFO    25-01-19 22:41:54.094518 - 0:00:33 - Epoch 0, iter 49, loss: 11.549151420593262
+2: INFO    25-01-19 22:41:54.638482 - 0:00:34 - Epoch 0, iter 50, loss: 13.290614128112793
+2: INFO    25-01-19 22:41:55.178627 - 0:00:34 - Epoch 0, iter 51, loss: 11.200936317443848
+2: INFO    25-01-19 22:41:55.719711 - 0:00:35 - Epoch 0, iter 52, loss: 14.603311538696289
+2: INFO    25-01-19 22:41:56.257215 - 0:00:35 - Epoch 0, iter 53, loss: 12.888715744018555
+2: INFO    25-01-19 22:41:56.793136 - 0:00:36 - Epoch 0, iter 54, loss: 11.952495574951172
+2: INFO    25-01-19 22:41:57.431397 - 0:00:36 - Epoch 0, iter 55, loss: 12.496639251708984
+2: INFO    25-01-19 22:41:57.977173 - 0:00:37 - Epoch 0, iter 56, loss: 11.841485977172852
+2: INFO    25-01-19 22:41:58.511000 - 0:00:38 - Epoch 0, iter 57, loss: 16.56095314025879
+2: INFO    25-01-19 22:41:59.050394 - 0:00:38 - Epoch 0, iter 58, loss: 11.342288970947266
+2: INFO    25-01-19 22:41:59.595189 - 0:00:39 - Epoch 0, iter 59, loss: 11.484840393066406
+2: INFO    25-01-19 22:42:00.139308 - 0:00:39 - Epoch 0, iter 60, loss: 11.525861740112305
+2: INFO    25-01-19 22:42:00.682713 - 0:00:40 - Epoch 0, iter 61, loss: 11.998858451843262
+2: INFO    25-01-19 22:42:01.224193 - 0:00:40 - Epoch 0, iter 62, loss: 11.588655471801758
+2: INFO    25-01-19 22:42:01.803234 - 0:00:41 - Epoch 0, iter 63, loss: 11.681792259216309
+2: INFO    25-01-19 22:42:02.349738 - 0:00:41 - Epoch 0, iter 64, loss: 11.80160903930664
+2: INFO    25-01-19 22:42:02.886816 - 0:00:42 - Epoch 0, iter 65, loss: 14.299029350280762
+2: INFO    25-01-19 22:42:03.429998 - 0:00:42 - Epoch 0, iter 66, loss: 11.559122085571289
+2: INFO    25-01-19 22:42:03.974530 - 0:00:43 - Epoch 0, iter 67, loss: 11.353500366210938
+2: INFO    25-01-19 22:42:04.515570 - 0:00:44 - Epoch 0, iter 68, loss: 11.32999038696289
+2: INFO    25-01-19 22:42:05.073137 - 0:00:44 - Epoch 0, iter 69, loss: 13.103874206542969
+2: INFO    25-01-19 22:42:05.607256 - 0:00:45 - Epoch 0, iter 70, loss: 11.546209335327148
+2: INFO    25-01-19 22:42:06.358458 - 0:00:45 - Epoch 0, iter 71, loss: 11.30038070678711
+2: INFO    25-01-19 22:42:06.887071 - 0:00:46 - Epoch 0, iter 72, loss: 11.343268394470215
+2: INFO    25-01-19 22:42:07.430529 - 0:00:46 - Epoch 0, iter 73, loss: 13.49145221710205
+2: INFO    25-01-19 22:42:07.966753 - 0:00:47 - Epoch 0, iter 74, loss: 12.721384048461914
+2: INFO    25-01-19 22:42:08.507195 - 0:00:48 - Epoch 0, iter 75, loss: 25.29882049560547
+2: INFO    25-01-19 22:42:09.028995 - 0:00:48 - Epoch 0, iter 76, loss: 11.378541946411133
+2: INFO    25-01-19 22:42:09.571213 - 0:00:49 - Epoch 0, iter 77, loss: 11.471050262451172
+2: INFO    25-01-19 22:42:10.112939 - 0:00:49 - Epoch 0, iter 78, loss: 17.241138458251953
+2: INFO    25-01-19 22:42:10.655045 - 0:00:50 - Epoch 0, iter 79, loss: 12.039520263671875
+2: INFO    25-01-19 22:42:11.192352 - 0:00:50 - Epoch 0, iter 80, loss: 12.312783241271973
+2: INFO    25-01-19 22:42:11.743340 - 0:00:51 - Epoch 0, iter 81, loss: 12.493925094604492
+2: INFO    25-01-19 22:42:12.279455 - 0:00:51 - Epoch 0, iter 82, loss: 15.846549034118652
+2: INFO    25-01-19 22:42:12.821959 - 0:00:52 - Epoch 0, iter 83, loss: 12.3104248046875
+2: INFO    25-01-19 22:42:13.356439 - 0:00:52 - Epoch 0, iter 84, loss: 12.421041488647461
+2: INFO    25-01-19 22:42:13.903669 - 0:00:53 - Epoch 0, iter 85, loss: 12.029139518737793
+2: INFO    25-01-19 22:42:14.443645 - 0:00:54 - Epoch 0, iter 86, loss: 11.653169631958008
+2: INFO    25-01-19 22:42:14.992267 - 0:00:54 - Epoch 0, iter 87, loss: 11.492486953735352
+2: INFO    25-01-19 22:42:15.537326 - 0:00:55 - Epoch 0, iter 88, loss: 11.779747009277344
+2: INFO    25-01-19 22:42:16.073555 - 0:00:55 - Epoch 0, iter 89, loss: 12.045280456542969
+2: INFO    25-01-19 22:42:16.619131 - 0:00:56 - Epoch 0, iter 90, loss: 11.49244499206543
+2: INFO    25-01-19 22:42:17.162905 - 0:00:56 - Epoch 0, iter 91, loss: 11.224029541015625
+2: INFO    25-01-19 22:42:17.699588 - 0:00:57 - Epoch 0, iter 92, loss: 11.15732479095459
+Traceback (most recent call last):
+  File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/fumiyauchiyama/repos/x-anything/scripts/main/train.py", line 33, in <module>
+    main()
+  File "/home/fumiyauchiyama/repos/x-anything/scripts/main/train.py", line 30, in main
+    trainer.train()
+  File "/home/fumiyauchiyama/repos/x-anything/scripts/main/trainer.py", line 368, in train
+    self.train_one_epoch(epoch, step)
+  File "/home/fumiyauchiyama/repos/x-anything/scripts/main/trainer.py", line 342, in train_one_epoch
+    loss[CORE_LOSS_KEY].backward()
+  File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+[rank2]:     return _run_code(code, main_globals, None,
+[rank2]:   File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/runpy.py", line 86, in _run_code
+[rank2]:     exec(code, run_globals)
+[rank2]:   File "/home/fumiyauchiyama/repos/x-anything/scripts/main/train.py", line 33, in <module>
+[rank2]:     main()
+[rank2]:   File "/home/fumiyauchiyama/repos/x-anything/scripts/main/train.py", line 30, in main
+[rank2]:     trainer.train()
+[rank2]:   File "/home/fumiyauchiyama/repos/x-anything/scripts/main/trainer.py", line 368, in train
+[rank2]:     self.train_one_epoch(epoch, step)
+[rank2]:   File "/home/fumiyauchiyama/repos/x-anything/scripts/main/trainer.py", line 342, in train_one_epoch
+[rank2]:     loss[CORE_LOSS_KEY].backward()
+[rank2]:   File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+[rank2]:     torch.autograd.backward(
+[rank2]:   File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+[rank2]:     _engine_run_backward(
+[rank2]:   File "/home/fumiyauchiyama/anaconda3/envs/py10/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+[rank2]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank2]: KeyboardInterrupt

@@ -2,14 +2,17 @@ from typing import List, Dict, Any, Optional, Tuple
 import torch
 import random
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
+import time
 
+import wandb
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from x_anything.utils.transforms import ResizeLongestSide
 from x_anything.training.loss import MultiStepMultiMasksAndIous, CORE_LOSS_KEY
 from x_anything.training.optim import OptimizationArgs, get_optimizer
 from x_anything.training.data import SA1BDatasetArgs, SA1B_Dataset, get_dataloader
+from x_anything.training.distributed import dist_mean_dict
 from x_anything.build_sam import SamWithTimmViTArgs, build_sam_with_timm
 
 logger = logging.getLogger()
@@ -29,6 +32,7 @@ class SamTrainer:
             world_size: int,
             rank: int,
             ) -> None:
+        self.cfg = args
         self.num_epochs = args.num_epochs
         self.save_steps = args.save_steps
         model = build_sam_with_timm(args=args.model).to(rank)
@@ -336,9 +340,13 @@ class SamTrainer:
                     )
                 loss = self.loss_fn(output_masks, target)
                 loss[CORE_LOSS_KEY].backward()
-                logger.info(f"Epoch {epoch}, iter {batch_idx}, loss: {loss[CORE_LOSS_KEY].item()}")
                 self.optimizer.step()    
                 self.scheduler.step()
+
+                logger.info(f"Epoch {epoch}, iter {batch_idx}, loss: {loss[CORE_LOSS_KEY].item()}")
+                loss = dist_mean_dict(loss)
+                if self.rank == 0:
+                    wandb.log(loss)
 
                 if step % self.save_steps == 0:
                     torch.save(self.model.module.state_dict(), f"outputs/ckpts/model_{step}.pth")
@@ -347,6 +355,17 @@ class SamTrainer:
 
     def train(self) -> None:
         self.model.module.train()
+
+        if self.rank == 0:
+            # determine experiment id from time
+            experiment_id = int(time.time())
+
+            wandb.init(
+                project="x-anything",
+                config=asdict(self.cfg),
+                name=f"experiment_{experiment_id}",
+                )
+
         step = 0
         for epoch in range(self.num_epochs):
             self.train_one_epoch(epoch, step)

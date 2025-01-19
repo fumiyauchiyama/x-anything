@@ -1,0 +1,7 @@
+{"time":"2025-01-19T22:51:48.613716128Z","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"/home/fumiyauchiyama/repos/x-anything/wandb/run-20250119_225148-r5087ggr/logs/debug-core.log"}
+{"time":"2025-01-19T22:51:48.717103592Z","level":"INFO","msg":"created new stream","id":"r5087ggr"}
+{"time":"2025-01-19T22:51:48.717148504Z","level":"INFO","msg":"stream: started","id":"r5087ggr"}
+{"time":"2025-01-19T22:51:48.717173109Z","level":"INFO","msg":"writer: Do: started","stream_id":"r5087ggr"}
+{"time":"2025-01-19T22:51:48.717205709Z","level":"INFO","msg":"handler: started","stream_id":"r5087ggr"}
+{"time":"2025-01-19T22:51:48.717251531Z","level":"INFO","msg":"sender: started","stream_id":"r5087ggr"}
+{"time":"2025-01-19T22:51:49.031757919Z","level":"INFO","msg":"Starting system monitor"}

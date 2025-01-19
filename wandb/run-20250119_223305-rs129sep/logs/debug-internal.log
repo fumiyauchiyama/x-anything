@@ -1,0 +1,17 @@
+{"time":"2025-01-19T22:33:05.708061485Z","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"/home/fumiyauchiyama/repos/x-anything/wandb/run-20250119_223305-rs129sep/logs/debug-core.log"}
+{"time":"2025-01-19T22:33:05.81171786Z","level":"INFO","msg":"created new stream","id":"rs129sep"}
+{"time":"2025-01-19T22:33:05.811802557Z","level":"INFO","msg":"stream: started","id":"rs129sep"}
+{"time":"2025-01-19T22:33:05.81188911Z","level":"INFO","msg":"sender: started","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:05.811941479Z","level":"INFO","msg":"handler: started","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:05.811876613Z","level":"INFO","msg":"writer: Do: started","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:06.047023638Z","level":"ERROR","msg":"HTTP error","status":403,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:33:06.047126897Z","level":"ERROR","msg":"sender: upsertRun:","error":"failed to upsert bucket: returned error 403 Forbidden: {\"errors\":[{\"message\":\"permission denied\",\"path\":[\"upsertBucket\"],\"extensions\":{\"code\":\"PERMISSION_ERROR\"}}],\"data\":{\"upsertBucket\":null}}"}
+{"time":"2025-01-19T22:33:06.056766582Z","level":"INFO","msg":"stream: closing","id":"rs129sep"}
+{"time":"2025-01-19T22:33:06.056877712Z","level":"ERROR","msg":"sender: upsertConfig: RunRecord is nil"}
+{"time":"2025-01-19T22:33:06.333468317Z","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:33:06.333556709Z","level":"ERROR","msg":"runfiles: CreateRunFiles returned error: returned error 404 Not Found: {\"errors\":[{\"message\":\"project sam/x-anything not found during createRunFiles\",\"path\":[\"createRunFiles\"]}],\"data\":{\"createRunFiles\":null}}"}
+{"time":"2025-01-19T22:33:06.334079089Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-19T22:33:06.334140417Z","level":"INFO","msg":"handler: closed","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:06.334166055Z","level":"INFO","msg":"writer: Close: closed","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:06.334176655Z","level":"INFO","msg":"sender: closed","stream_id":"rs129sep"}
+{"time":"2025-01-19T22:33:06.33423617Z","level":"INFO","msg":"stream: closed","id":"rs129sep"}

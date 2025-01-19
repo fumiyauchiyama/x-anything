@@ -1,0 +1,64 @@
+_wandb:
+    value:
+        cli_version: 0.19.4
+        m: []
+        python_version: 3.10.16
+        t:
+            "1":
+                - 1
+                - 41
+                - 49
+                - 55
+                - 63
+            "2":
+                - 1
+                - 41
+                - 49
+                - 55
+                - 63
+            "3":
+                - 16
+                - 23
+                - 55
+            "4": 3.10.16
+            "5": 0.19.4
+            "8":
+                - 5
+            "12": 0.19.4
+            "13": linux-x86_64
+model:
+    value:
+        checkpoint: null
+        drop_path_rate: 0.1
+        drop_rate: 0
+        model_name: vit_tiny_patch16_224
+        preprocess:
+            img_size: 224
+            interpolation: bicubic
+            is_training: false
+            no_aug: true
+        pretrained: false
+        vit_checkpoint: null
+num_epochs:
+    value: 2
+optim:
+    value:
+        betas:
+            - 0.9
+            - 0.999
+        decay_iter_1: 60000
+        decay_iter_2: 86666
+        lr: 0.0008
+        total_iters: 90000
+        warmup_iters: 250
+        weight_decay: 0.1
+save_steps:
+    value: 200
+train_dataset:
+    value:
+        img_size: 1024
+        jpg_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_jpg_1_20
+        json_dir: /home/fumiyauchiyama/dataset/sa-1b/raw_json_1_20
+        max_mask_area_ratio: 0.9
+        max_mask_num: 3
+        num_data: 223749

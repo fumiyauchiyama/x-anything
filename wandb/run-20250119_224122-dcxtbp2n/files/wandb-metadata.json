@@ -1,0 +1,85 @@
+{
+  "os": "Linux-6.1.119-129.201.amzn2023.x86_64-x86_64-with-glibc2.34",
+  "python": "CPython 3.10.16",
+  "startedAt": "2025-01-19T22:41:22.379002Z",
+  "args": [
+    "config=scripts/main/configs/debug2.yaml"
+  ],
+  "program": "-m scripts.main.train",
+  "git": {
+    "remote": "https://github.com/fumiyauchiyama/x-anything.git",
+    "commit": "b8b0967e7218950155aa17aa763074a74d91d017"
+  },
+  "email": "uchiyama-fumiya@aist.go.jp",
+  "root": "/home/fumiyauchiyama/repos/x-anything",
+  "host": "ip-172-31-39-245.ap-southeast-1.compute.internal",
+  "executable": "/home/fumiyauchiyama/anaconda3/envs/py10/bin/python",
+  "cpu_count": 32,
+  "cpu_count_logical": 64,
+  "gpu": "Tesla V100-SXM2-16GB",
+  "gpu_count": 8,
+  "disk": {
+    "/": {
+      "total": "4397966798848",
+      "used": "617808166912"
+    }
+  },
+  "memory": {
+    "total": "515642753024"
+  },
+  "cpu": {
+    "count": 32,
+    "countLogical": 64
+  },
+  "gpu_nvidia": [
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta"
+    }
+  ],
+  "cudaVersion": "12.7"
+}

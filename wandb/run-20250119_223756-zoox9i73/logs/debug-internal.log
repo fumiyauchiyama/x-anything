@@ -1,0 +1,17 @@
+{"time":"2025-01-19T22:37:56.431696857Z","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"/home/fumiyauchiyama/repos/x-anything/wandb/run-20250119_223756-zoox9i73/logs/debug-core.log"}
+{"time":"2025-01-19T22:37:56.534428395Z","level":"INFO","msg":"created new stream","id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.534467841Z","level":"INFO","msg":"stream: started","id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.534495001Z","level":"INFO","msg":"sender: started","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.534492118Z","level":"INFO","msg":"writer: Do: started","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.53452772Z","level":"INFO","msg":"handler: started","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.79024699Z","level":"ERROR","msg":"HTTP error","status":403,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:37:56.790331906Z","level":"ERROR","msg":"sender: upsertRun:","error":"failed to upsert bucket: returned error 403 Forbidden: {\"errors\":[{\"message\":\"permission denied\",\"path\":[\"upsertBucket\"],\"extensions\":{\"code\":\"PERMISSION_ERROR\"}}],\"data\":{\"upsertBucket\":null}}"}
+{"time":"2025-01-19T22:37:56.800420923Z","level":"INFO","msg":"stream: closing","id":"zoox9i73"}
+{"time":"2025-01-19T22:37:56.800539674Z","level":"ERROR","msg":"sender: upsertConfig: RunRecord is nil"}
+{"time":"2025-01-19T22:37:57.078942609Z","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:37:57.079017728Z","level":"ERROR","msg":"runfiles: CreateRunFiles returned error: returned error 404 Not Found: {\"errors\":[{\"message\":\"project sam/x-anything not found during createRunFiles\",\"path\":[\"createRunFiles\"]}],\"data\":{\"createRunFiles\":null}}"}
+{"time":"2025-01-19T22:37:57.079533771Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-19T22:37:57.079592024Z","level":"INFO","msg":"handler: closed","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:57.079615265Z","level":"INFO","msg":"writer: Close: closed","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:57.079627958Z","level":"INFO","msg":"sender: closed","stream_id":"zoox9i73"}
+{"time":"2025-01-19T22:37:57.07967507Z","level":"INFO","msg":"stream: closed","id":"zoox9i73"}

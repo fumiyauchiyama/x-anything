@@ -1,0 +1,15 @@
+{"time":"2025-01-19T22:41:22.385092192Z","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"/home/fumiyauchiyama/repos/x-anything/wandb/run-20250119_224122-ntw874wx/logs/debug-core.log"}
+{"time":"2025-01-19T22:41:22.487769356Z","level":"INFO","msg":"created new stream","id":"ntw874wx"}
+{"time":"2025-01-19T22:41:22.487801683Z","level":"INFO","msg":"stream: started","id":"ntw874wx"}
+{"time":"2025-01-19T22:41:22.487864649Z","level":"INFO","msg":"writer: Do: started","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:41:22.487912101Z","level":"INFO","msg":"handler: started","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:41:22.487918923Z","level":"INFO","msg":"sender: started","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:41:23.191274418Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-01-19T22:42:18.247649246Z","level":"INFO","msg":"stream: closing","id":"ntw874wx"}
+{"time":"2025-01-19T22:42:18.247686869Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-01-19T22:42:18.248359199Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-01-19T22:42:19.755874208Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-19T22:42:20.021129183Z","level":"INFO","msg":"handler: closed","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:42:20.021157035Z","level":"INFO","msg":"writer: Close: closed","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:42:20.021224607Z","level":"INFO","msg":"sender: closed","stream_id":"ntw874wx"}
+{"time":"2025-01-19T22:42:20.021243432Z","level":"INFO","msg":"stream: closed","id":"ntw874wx"}

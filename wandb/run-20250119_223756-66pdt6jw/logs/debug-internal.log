@@ -1,0 +1,17 @@
+{"time":"2025-01-19T22:37:56.436338503Z","level":"INFO","msg":"stream: starting","core version":"0.19.4","symlink path":"/home/fumiyauchiyama/repos/x-anything/wandb/run-20250119_223756-66pdt6jw/logs/debug-core.log"}
+{"time":"2025-01-19T22:37:56.53834099Z","level":"INFO","msg":"created new stream","id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.538385224Z","level":"INFO","msg":"stream: started","id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.538440156Z","level":"INFO","msg":"writer: Do: started","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.538470428Z","level":"INFO","msg":"handler: started","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.538545683Z","level":"INFO","msg":"sender: started","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.77919038Z","level":"ERROR","msg":"HTTP error","status":403,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:37:56.779297055Z","level":"ERROR","msg":"sender: upsertRun:","error":"failed to upsert bucket: returned error 403 Forbidden: {\"errors\":[{\"message\":\"permission denied\",\"path\":[\"upsertBucket\"],\"extensions\":{\"code\":\"PERMISSION_ERROR\"}}],\"data\":{\"upsertBucket\":null}}"}
+{"time":"2025-01-19T22:37:56.78823899Z","level":"INFO","msg":"stream: closing","id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:56.788309181Z","level":"ERROR","msg":"sender: upsertConfig: RunRecord is nil"}
+{"time":"2025-01-19T22:37:57.042947915Z","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/graphql"}
+{"time":"2025-01-19T22:37:57.043004996Z","level":"ERROR","msg":"runfiles: CreateRunFiles returned error: returned error 404 Not Found: {\"errors\":[{\"message\":\"project sam/x-anything not found during createRunFiles\",\"path\":[\"createRunFiles\"]}],\"data\":{\"createRunFiles\":null}}"}
+{"time":"2025-01-19T22:37:57.044572667Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-19T22:37:57.045306246Z","level":"INFO","msg":"handler: closed","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:57.045338339Z","level":"INFO","msg":"sender: closed","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:57.045326581Z","level":"INFO","msg":"writer: Close: closed","stream_id":"66pdt6jw"}
+{"time":"2025-01-19T22:37:57.045395934Z","level":"INFO","msg":"stream: closed","id":"66pdt6jw"}
